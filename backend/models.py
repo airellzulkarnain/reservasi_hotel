@@ -9,9 +9,9 @@ class Role(enum.Enum):
     resepsionis = "resepsionis"
 
 
-# class Status(enum.Enum):
-#     booked = 'booked'
-#     checked_in = 'checked_in'
+class Status(enum.Enum):
+    booked = 'booked'
+    checked_in = 'checked_in'
 #     checked_out = 'checked_out'
 
 
@@ -67,7 +67,7 @@ class Reservasi(Base):
     tanggal_check_in = Column(Date, nullable=False)
     tanggal_check_out = Column(Date, nullable=False)
 
-    # status = Column(Enum(Status), nullable=False)
+    status = Column(Enum(Status), nullable=False, default='booked')
     id_kamar = Column(Integer, ForeignKey("kamar.id"), nullable=False)
 
     kamar = relationship("Kamar", back_populates="himpunan_reservasi")

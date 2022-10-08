@@ -30,3 +30,16 @@
     visibility: visible;
 
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.table-container {
+    height: 468px;
+}
+
+.add-btn:hover i {
+    color: #ddd;
+    transition-duration: 300ms;
+}

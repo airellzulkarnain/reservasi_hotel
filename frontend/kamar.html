@@ -7,34 +7,36 @@
     <title>Document</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/jquery-3.6.1.min.js"></script>
 </head>
   <body>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-scrollable  ">
+    <div class="modal fade" id="reservasiModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Reservasi Kamar</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            <label for="x" class="form-label">test: </label>
-            <input type="text" class="form-control">
-            <label for="x" class="form-label">test: </label>
-            <input type="text" class="form-control">
-            <label for="x" class="form-label">test: </label>
-            <input type="text" class="form-control">
-            <label for="x" class="form-label">test: </label>
-            <input type="text" class="form-control">
-            <label for="x" class="form-label">test: </label>
-            <input type="text" class="form-control">
-            <label for="x" class="form-label">test: </label>
-            <input type="text" class="form-control">
-            <label for="x" class="form-label">test: </label>
-            <input type="text" class="form-control">
+          <div class="modal-body reservasi">
+            <label for="nama_pemesan" class="form-label">Nama Pemesan: </label>
+            <input type="text" class="form-control" name="nama_pemesan" id="nama_pemesan" required>
+            <label for="email" class="form-label">Email: </label>
+            <input type="email" class="form-control" name="email" id="email" required>
+            <label for="no_telp" class="form-label">No. Telp: </label>
+            <input type="tel" class="form-control" name="no_telp" id="no_telp" pattern="[0-9]{4}-[0-9]{4}-[0-9]{4}" required>
+            <label for="nama_tamu" class="form-label">Nama Tamu: </label>
+            <input type="text" class="form-control" name="nama_tamu" id="nama_tamu" required>
+            <label for="jumlah_kamar" class="form-label">Jumlah Kamar: </label>
+            <input type="number" class="form-control" name="jumlah_kamar" id="jumlah_kamar" min="1" required>
+            <label for="tanggal_check_in" class="form-label">Tanggal Check In: </label>
+            <input type="date" class="form-control" name="tanggal_check_in" id="tanggal_check_in" required>
+            <label for="tanggal_check_out" class="form-label">Tanggal Check Out: </label>
+            <input type="date" class="form-control" name="tanggal_check_out" id="tanggal_check_out" required>
+            <input type="hidden" name="id_kamar" id="id_kamar">
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary reservasi-button">Reservasi</button>
           </div>
         </div>
       </div>
@@ -48,10 +50,10 @@
           <div class="collapse navbar-collapse d-flex-lg justify-content-lg-end" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="index.html">Home</a>
+                <a class="nav-link" href="index.html">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="#">Kamar</a>
+                <a class="nav-link active" aria-current="page" href="#">Kamar</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="fasilitas.html">Fasilitas</a>
@@ -61,67 +63,7 @@
         </div>
       </nav>
       <div class="container-fluid min-vh-100 pt-5">
-        <div class="row g-3 mt-2">
-          <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="card">
-              <img src="https://media.istockphoto.com/photos/law-concept-themis-statue-judge-hammer-and-books-picture-id1139699594?k=20&m=1139699594&s=612x612&w=0&h=5qyZwlbFbGUmEuK8Rx96M_N_Kf3sFHQz2Gan8Emn6q8=" alt="" class="card-img-top">
-              <div class="card-body">
-                <h2 class="card-title">test</h2>
-                <p class="card-text">test</p>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-              </ul>
-              <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="card">
-              <img src="https://media.istockphoto.com/photos/law-concept-themis-statue-judge-hammer-and-books-picture-id1139699594?k=20&m=1139699594&s=612x612&w=0&h=5qyZwlbFbGUmEuK8Rx96M_N_Kf3sFHQz2Gan8Emn6q8=" alt="" class="card-img-top">
-              <div class="card-body">
-                <h2 class="card-title">test</h2>
-                <p class="card-text">test</p>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-              </ul>
-              <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="card">
-              <img src="https://media.istockphoto.com/photos/law-concept-themis-statue-judge-hammer-and-books-picture-id1139699594?k=20&m=1139699594&s=612x612&w=0&h=5qyZwlbFbGUmEuK8Rx96M_N_Kf3sFHQz2Gan8Emn6q8=" alt="" class="card-img-top">
-              <div class="card-body">
-                <h2 class="card-title">test</h2>
-                <p class="card-text">test</p>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-              </ul>
-              <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-6 col-lg-4">
-            <div class="card">
-              <img src="https://media.istockphoto.com/photos/law-concept-themis-statue-judge-hammer-and-books-picture-id1139699594?k=20&m=1139699594&s=612x612&w=0&h=5qyZwlbFbGUmEuK8Rx96M_N_Kf3sFHQz2Gan8Emn6q8=" alt="" class="card-img-top">
-              <div class="card-body">
-                <h2 class="card-title">test</h2>
-                <p class="card-text">test</p>
-              </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-                <li class="list-group-item">test</li>
-              </ul>
-              <a href="" class="stretched-link" data-bs-toggle="modal" data-bs-target="#exampleModal"></a>
-            </div>
-          </div>
+        <div class="row g-3 mt-2 container-kamar">
         </div>
       </div>
       <footer>
@@ -131,6 +73,69 @@
             </div>
         </div>
       </footer>
+      <script>
+        $(document).ready(function () {
+          function next_input(element){
+            element.next().focus();
+          }
+          $('.form-control').keyup(function(e){
+            if (e.which == 13) {
+              next_input($(this));
+            }
+          });
+          $.ajax({'url': 'http://localhost:8000/get_kamar', 'type': 'GET'})
+          .then(function (res) {
+            const container_kamar = $('.container-kamar');
+            for (const r of res) {
+              let fasilitas_kamar, content;
+              $.ajax({'url': `http://localhost:8000/jumlah_kamar/${r.Kamar.id}`, 'type': 'GET'}).then(function (res2){
+                $.ajax({'url': `http://localhost:8000/get_fasilitas_kamar/${r.Kamar.id}`, 'type': 'GET'}).then(function (res1){
+                fasilitas_kamar = res1;
+                content = `
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <div class="card h-100" id="${r.Kamar.id}">
+                    <img src="http://localhost:8000/${r.Kamar.gambar}" alt="${r.Kamar.tipe_kamar}" class="card-img-top">
+                    <div class="card-body">
+                      <h2 class="card-title">${r.Kamar.tipe_kamar}</h2>
+                      <p class="card-text">Fasilitas: </p>
+                    </div>
+                    <div class="list-group list-group-flush">
+              `;
+              fasilitas_kamar.forEach(element => {
+                content += `<div class="list-group-item">${element.FasilitasKamar.nama}</div>`;
+              });
+                content += `<div class="list-group-item">${res2.jumlah}</div>`;
+                content += `</div><a href="#" class="stretched-link" data-bs-toggle="modal" data-bs-target="#reservasiModal" onclick="$('#id_kamar').val(${r.Kamar.id});"></a></div></div>`;
+              $(content)
+              .appendTo(container_kamar);
+              });
+              });
+            }
+          });
+
+          $('.reservasi-button').click(function(){
+            let data = {};
+            $.map($('.reservasi > input').serializeArray(), function (n, i){
+              data[n['name']] = n['value'];
+            });
+            $.ajax({'url': 'http://localhost:8000/reservasi', 'xhrFields':{'responseType': 'blob'}, 'type': 'POST', 'data': JSON.stringify(data), 'contentType': 'application/json'})
+            .then(function (res){
+                alert("Reservasi Sukses, Harap simpan bukti reservasi!");
+                const link = URL.createObjectURL(res);
+                let date = new Date();
+                date = date.toDateString();
+                const a = document.createElement('a');
+                a.href = link;
+                a.download = `bukti reservasi ${date}.pdf`;
+                a.click();
+                URL.revokeObjectURL(link);
+                location.reload();
+            }).catch(function(){
+              alert("Reservasi gagal, harap coba lagi. ");
+            });
+          });
+        });
+      </script>
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -19,14 +19,15 @@ def reservasi(db: Session, data: schemas.Reservasi):
     kamar: models.Kamar = db.scalar(
         select(models.Kamar).where(models.Kamar.id == data.id_kamar)
     )
+    today = datetime.now(pytz.timezone("Asia/Jakarta")).date()
     jumlah_terisi = sum(
         [
             x.jumlah_kamar
             for x in kamar.himpunan_reservasi
-            if x.tanggal_check_out >= datetime.now(pytz.timezone("Asia/Jakarta")).date()
+            if x.tanggal_check_out >= today
         ]
     )
-    if data.jumlah_kamar <= kamar.jumlah - jumlah_terisi:
+    if data.jumlah_kamar <= kamar.jumlah - jumlah_terisi and today <= data.tanggal_check_in < data.tanggal_check_out:
         reservasi = models.Reservasi(**data.dict())
         db.add(reservasi)
         db.commit()
@@ -53,9 +54,11 @@ def update_kamar(db: Session, data: dict):
 
 
 def get_fasilitas_kamar(db: Session, id: int):
-    return db.execute(
-        select(models.FasilitasKamar).where(models.FasilitasKamar.id_kamar == id)
-    ).all()
+    if id != -1: 
+        return db.execute(
+            select(models.FasilitasKamar).where(models.FasilitasKamar.id_kamar == id)
+        ).all()
+    return db.execute(select(models.FasilitasKamar)).all();
 
 
 def insert_fasilitas_kamar(db: Session, data: schemas.FasilitasKamar):
@@ -115,29 +118,48 @@ def get_fasilitas_hotel(db: Session):
 # Resepsionis :
 def get_reservasi(db: Session):
     return db.execute(
-        select(models.Reservasi).where(
+        select(models.Reservasi).where(and_(
             models.Reservasi.tanggal_check_out
-            >= datetime.now(pytz.timezone("Asia/Jakarta")).date()
+            >= datetime.now(pytz.timezone("Asia/Jakarta")).date(), 
+            models.Reservasi.status != 'checked_in'
+        )
         )
     ).all()
 
 
-def filter_reservasi_by_tanggal_check_in(db: Session, tanggal_check_in: date):
-    return db.execute(
-        select(models.Reservasi).where(
-            models.Reservasi.tanggal_check_in == tanggal_check_in
-        )
-    ).all()
+def filter_reservasi_by_tanggal_check_in(db: Session, tanggal_check_in: date | None = None):
+    if tanggal_check_in is not None: 
+        return db.execute(
+            select(models.Reservasi).where(and_(
+                models.Reservasi.tanggal_check_in == tanggal_check_in, 
+                models.Reservasi.tanggal_check_out
+                >= datetime.now(pytz.timezone("Asia/Jakarta")).date(), 
+                models.Reservasi.status != 'checked_in'
+            )
+            )
+        ).all()
+    return get_reservasi(db)
 
 
-def search_reservasi_by_nama_tamu(db: Session, nama_tamu: str):
-    return db.execute(
-        select(models.Reservasi).where(
-            models.Reservasi.nama_tamu.like(f"%{nama_tamu}%")
-        )
-    ).all()
+def search_reservasi_by_nama_tamu(db: Session, nama_tamu: str | None = None):
+    if nama_tamu is not None: 
+        return db.execute(
+            select(models.Reservasi).where(and_(
+                models.Reservasi.nama_tamu.like(f"%{nama_tamu}%"), 
+                models.Reservasi.tanggal_check_out
+                >= datetime.now(pytz.timezone("Asia/Jakarta")).date(), 
+                models.Reservasi.status != 'checked_in'
+                )
+            )
+        ).all()
+    return get_reservasi(db)
 
-
+def check_in(db: Session, id: int): 
+    reservasi: models.Reservasi = db.scalar(select(models.Reservasi).where(models.Reservasi.id == id))
+    reservasi.status = 'checked_in'
+    db.commit()
+    db.refresh(reservasi)
+    return {"status": "check in succeed"}
 # 1.Resepsionis dapat melakukan pengecekan data reservasi
 # 2.Resepsionis dapat melakukan filtering berdasarkan tanggal check-in
 # 3.Resepsionis dapat melakukan pencarian data reservasi berdasarkan nama tamu.

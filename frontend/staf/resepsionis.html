@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap/css/icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/jquery-3.6.1.min.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">HOTEL HEBAT</a>
+          <div class="d-flex flex-row-reverse">
+            <p class="navbar-text mx-2 mb-0 mt-1 user-select-none logout cursor-pointer">Logout <i class="bi bi-box-arrow-in-left"></i></p>
+            <h3 class="navbar-text me-2 mb-0">Resepsionis</h3>
+          </div>
+        </div>
+      </nav>
+      <div class="container min-vh-100 mt-3">
+        <div class="row d-flex justify-content-between">
+            <input type="text" class="form-control-sm w-25" placeholder="Search By Name" name="search" id="search">
+            <input type="date" class="form-control-sm w-25" placeholder="Search By Check In" name="searchdate" id="searchdate">
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-container tabel-resepsionis w-100 overflow-auto mx-auto rounded-3 p-0 mt-4 border shadow">
+                    <table class="w-100">
+                        <tr class="border-bottom bg-dark text-light text-center">
+                            <th>Nama Tamu</th>
+                            <th>Tanggal Check In</th>
+                            <th>Tanggal Check Out</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </div>
+      <footer>
+        <div class="container-fluid">
+            <div class="row">
+                <p class="p-5 mt-5 mb-0 text-center bg-dark text-white">Copyright &copy; 2022 Airell Zulkarnain. All Right Reservered</p>
+            </div>
+        </div>
+      </footer>
+    <script>
+        $(document).ready(function () {
+            function check_in(id){
+                $.ajax({'url': `http://localhost:8000/check_in/${id}`, 'type': 'PUT', 'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}})
+                .then(function(res){
+                    alert('Check In Berhasil !');
+                    load_resevasi();
+                });
+            }
+            if (!(localStorage.getItem('role') === 'resepsionis')) {
+                $('body').remove();
+                location.replace('index.html');
+            }
+            setInterval($.ajax({'url': 'http://localhost:8000/check_expired', 'type': 'GET', headers: {'Authorization': 'Bearer '+localStorage.getItem('access_token')}})
+            .then(function () {}).catch(function(err){if (err.status == 401){$('.logout').click();}}), 1000);
+            $('.logout').click(function () {
+                localStorage.clear();
+                location.replace('index.html');
+            });
+            function load_resevasi() {
+                $.ajax({'url': 'http://localhost:8000/get_reservasi', 'type': 'GET', 'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}}).then(function (res){
+                $('.tabel-resepsionis > table').empty()
+                .append($(`
+                        <tr class="border-bottom bg-dark text-light text-center">
+                            <th>Nama Tamu</th>
+                            <th>Tanggal Check In</th>
+                            <th>Tanggal Check Out</th>
+                            <th>Aksi</th>
+                        </tr>`));
+                for (const r of res) {
+                    $(`
+                        <tr class="border-bottom text-center">
+                            <td>${r.Reservasi.nama_tamu}</td>
+                            <td>${r.Reservasi.tanggal_check_in}</td>
+                            <td>${r.Reservasi.tanggal_check_out}</td>
+                            <td class="cursor-pointer user-select-none text-primary check-in" id="${r.Reservasi.id}">Check In</td>
+                        </tr>
+                    `).appendTo($('.tabel-resepsionis > table'));
+                }
+            }).then(function (){
+                $('.check-in').click(function () {
+                check_in($(this).attr('id'));
+            });
+            }).catch(function (err){
+                if (err.status == 401) {
+                    localStorage.clear();
+                    location.replace('index.html');
+                }
+            });
+            }
+            load_resevasi();
+
+            function load_reservasi_by_name(name){
+                $('#searchdate').val('');
+                $.ajax({'url': `http://localhost:8000/get_reservasi_by_nama_tamu${name != '' ? '?nama_tamu='+name:''}`, 'type': 'GET', 
+                'headers': {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}})
+                .then(function(res) {
+                    $('.tabel-resepsionis > table').empty()
+                .append($(`
+                        <tr class="border-bottom bg-dark text-light text-center">
+                            <th>Nama Tamu</th>
+                            <th>Tanggal Check In</th>
+                            <th>Tanggal Check Out</th>
+                            <th>Aksi</th>
+                        </tr>`));
+                for (const r of res) {
+                    $(`
+                        <tr class="border-bottom text-center">
+                            <td>${r.Reservasi.nama_tamu}</td>
+                            <td>${r.Reservasi.tanggal_check_in}</td>
+                            <td>${r.Reservasi.tanggal_check_out}</td>
+                            <td class="cursor-pointer user-select-none text-primary check-in" id="${r.Reservasi.id}">Check In</td>
+                        </tr>
+                    `).appendTo($('.tabel-resepsionis > table'));
+                }
+                }).then(function (){
+                $('.check-in').click(function () {
+                check_in($(this).attr('id'));
+            });
+            }).catch(function (err){
+                if (err.status == 401) {
+                    localStorage.clear();
+                    location.replace('index.html');
+                }
+            });
+            }
+
+            function load_reservasi_by_check_in(tanggal){
+                $('#search').val('');
+                $.ajax({'url': `http://localhost:8000/get_reservasi_by_tanggal_check_in${tanggal != '' ? '?tanggal_check_in='+tanggal:''}`, 'type': 'GET', 
+                'headers': {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}})
+                .then(function(res) {
+                    $('.tabel-resepsionis > table').empty()
+                .append($(`
+                        <tr class="border-bottom bg-dark text-light text-center">
+                            <th>Nama Tamu</th>
+                            <th>Tanggal Check In</th>
+                            <th>Tanggal Check Out</th>
+                            <th>Aksi</th>
+                        </tr>`));
+                for (const r of res) {
+                    $(`
+                        <tr class="border-bottom text-center">
+                            <td>${r.Reservasi.nama_tamu}</td>
+                            <td>${r.Reservasi.tanggal_check_in}</td>
+                            <td>${r.Reservasi.tanggal_check_out}</td>
+                            <td class="cursor-pointer user-select-none text-primary check-in" id="${r.Reservasi.id}">Check In</td>
+                        </tr>
+                    `).appendTo($('.tabel-resepsionis > table'));
+                }
+                }).then(function (){
+                $('.check-in').click(function () {
+                check_in($(this).attr('id'));
+            });
+            }).catch(function (err){
+                if (err.status == 401) {
+                    localStorage.clear();
+                    location.replace('index.html');
+                }
+            });
+            }
+
+            $('#search').keyup(function (){
+                load_reservasi_by_name($(this).val());
+            });
+            $('#searchdate').change(function (){
+                load_reservasi_by_check_in($(this).val());
+            });
+        });
+    </script>
+    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import StreamingResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -23,6 +24,7 @@ from database import SessionLocal
 import models, crud, schemas
 import uvicorn
 import sys
+import os
 
 SECRET_KEY = "54c859181e1fafd5611ef27160ad54967e3b4aed46b80e906b0ebd673773a8ca"
 ALGORITHM = "HS256"
@@ -83,6 +85,10 @@ def check_login(db: Session = Depends(get_db), token: str = Depends(oauth2_schem
         raise credentials_exception
     return user
 
+@app.get('/check_expired')
+def check_expired(current_user: schemas.User = Depends(check_login)):
+    return current_user
+    
 
 @app.post("/login", tags=["Login"])
 def login(
@@ -103,6 +109,7 @@ def login(
                 algorithm=ALGORITHM,
             ),
             "token_type": "bearer",
+            "role": user.role
         }
     else:
         raise HTTPException(
@@ -130,14 +137,10 @@ def reservasi(data: schemas.Reservasi, db: Session = Depends(get_db)):
 		<table width='100%'>
 		<thead>
 			<tr>
-				<th width='24%'>Nama Pemesan</th>
-				<th width='24%'>Nama Tamu</th>
-				<th width='12%'>Email</th>
-				<th width='12%'>No. Telp</th>
-				<th width='6%'>Tipe_Kamar</th>
-				<th width='2%'>Jumlah Kamar</th>
-				<th width='10%'>Tanggal Check In</th>
-				<th width='10%'>Tanggal Check Out</th>
+				<th width='26%'>Nama Pemesan</th>
+				<th width='26%'>Nama Tamu</th>
+				<th width='28%'>Email</th>
+				<th width='20%'>No. Telp</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -146,6 +149,20 @@ def reservasi(data: schemas.Reservasi, db: Session = Depends(get_db)):
 				<td>{reservasi.nama_tamu}</td>
 				<td>{reservasi.email}</td>
 				<td>{reservasi.no_telp}</td>
+			</tr>
+		</tbody>
+		</table>
+        <table width='100%'>
+		<thead>
+			<tr>
+				<th width='20%'>Tipe_Kamar</th>
+				<th width='20%'>Jumlah Kamar</th>
+				<th width='30%'>Tanggal Check In</th>
+				<th width='30%'>Tanggal Check Out</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
 				<td>{reservasi.kamar.tipe_kamar}</td>
 				<td>{reservasi.jumlah_kamar}</td>
 				<td>{reservasi.tanggal_check_in}</td>
@@ -159,9 +176,9 @@ def reservasi(data: schemas.Reservasi, db: Session = Depends(get_db)):
             return StreamingResponse(
                 BytesIO(pdf.output()), media_type="application/pdf"
             )
-        except TypeError:
+        except:
             pass
-        return "FAILED"
+    return "FAILED"
 
 
 @app.post("/insert_kamar", tags=["administrator"])
@@ -186,9 +203,9 @@ def insert_kamar(
             return kamar
 
 
-@app.put("/update_kamar/{id}", tags=["administrator"])
+@app.put("/update_kamar", tags=["administrator"])
 def update_kamar(
-    id: int,
+    id: int = Form(..., gt=0),
     pict: UploadFile | None = None,
     jumlah: int | None = Form(None),
     tipe_kamar: str | None = Form(None),
@@ -198,12 +215,15 @@ def update_kamar(
     if current_user.role.value == models.Role.administrator.value:
         data = {"id": id}
         kamar: models.Kamar
+        tmp_name: str
         if jumlah is not None:
             data.update({"jumlah": jumlah})
         if tipe_kamar is not None:
             data.update({"tipe_kamar": tipe_kamar})
         if pict is not None:
             if pict.content_type.startswith("image"):
+                tmp_name = db.scalar(select(models.Kamar.gambar).where(models.Kamar.id == data['id']))
+                os.remove(tmp_name)
                 data.update(
                     {
                         "gambar": f'images/kamar/{str(datetime.now()).replace(" ", "")}{pict.filename}'
@@ -217,7 +237,7 @@ def update_kamar(
             try:
                 with open(data["gambar"], "wb") as image:
                     image.write(pict.file.read())
-            except IndexError:
+            except KeyError:
                 pass
         return kamar
 
@@ -264,7 +284,7 @@ def insert_fasilitas_hotel(
 
     if current_user.role.value == models.Role.administrator.value:
         if pict.content_type.startswith("image"):
-            data = {"nama": nama, "ketarangan": keterangan}
+            data = {"nama": nama, "keterangan": keterangan}
             data.update(
                 {
                     "gambar": f'images/fasilitas_hotel/{str(datetime.now()).replace(" ", "")}{pict.filename}'
@@ -276,9 +296,9 @@ def insert_fasilitas_hotel(
             return fasilitas_hotel
 
 
-@app.put("/update_fasilitas_hotel/{id}", tags=["administrator"])
+@app.put("/update_fasilitas_hotel", tags=["administrator"])
 def update_fasilitas_hotel(
-    id: int,
+    id: int = Form(..., gt=0),
     pict: UploadFile | None = None,
     nama: str | None = Form(None, max_length=50),
     keterangan: str | None = Form(None, max_length=100),
@@ -287,6 +307,7 @@ def update_fasilitas_hotel(
 ):
     if current_user.role.value == models.Role.administrator.value:
         data = {"id": id}
+        tmp_name: str
         fasilitas_hotel: models.FasilitasHotel
         if nama is not None:
             data.update({"nama": nama})
@@ -294,6 +315,8 @@ def update_fasilitas_hotel(
             data.update({"keterangan": keterangan})
         if pict is not None:
             if pict.content_type.startswith("image"):
+                tmp_name = db.scalar(select(models.FasilitasHotel.gambar).where(models.FasilitasHotel.id == data['id']))
+                os.remove(tmp_name)
                 data.update(
                     {
                         "gambar": f'images/fasilitas_hotel/{str(datetime.now()).replace(" ", "")}{pict.filename}'
@@ -307,7 +330,7 @@ def update_fasilitas_hotel(
             try:
                 with open(data["gambar"], "wb") as image:
                     image.write(pict.file.read())
-            except IndexError:
+            except KeyError:
                 pass
         return fasilitas_hotel
 
@@ -334,7 +357,7 @@ def get_reservasi(
 def filter_reservasi_by_tanggal_check_in(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(check_login),
-    tanggal_check_in: date = Query(...),
+    tanggal_check_in: date | None = Query(None),
 ):
     if current_user.role.value == models.Role.resepsionis.value:
         return crud.filter_reservasi_by_tanggal_check_in(db, tanggal_check_in)
@@ -344,11 +367,15 @@ def filter_reservasi_by_tanggal_check_in(
 def search_reservasi_by_nama_tamu(
     db: Session = Depends(get_db),
     current_user: schemas.User = Depends(check_login),
-    nama_tamu: str = Query(..., regex="^[a-zA-Z\s]+$"),
+    nama_tamu: str | None = Query(None, regex="^[a-zA-Z\s]+$"),
 ):
     if current_user.role.value == models.Role.resepsionis.value:
         return crud.search_reservasi_by_nama_tamu(db, nama_tamu)
 
+@app.put("/check_in/{id}")
+def check_in(id: int, db: Session = Depends(get_db), current_user: schemas.User = Depends(check_login)):
+    if current_user.role.value == models.Role.resepsionis.value: 
+        return crud.check_in(db, id)
 
 if __name__ == "__main__":
     if sys.argv[1] == "migrate":

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap/css/icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/jquery-3.6.1.min.js"></script>
+</head>
+<body>
+    <div class="container min-vh-100">
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center mt-5"><b>HOTEL HEBAT</b></h1>
+                <div class="shadow card position-absolute top-50 start-50 translate-middle">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Login Staf</h2>
+                        <label for="username" class="form-label" >Username</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Username">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-primary w-100 h-100 login"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container-fluid">
+            <div class="row">
+                <p class="p-5 mt-5 mb-0 text-center bg-dark text-white">Copyright &copy; 2022 Airell Zulkarnain. All Right Reservered</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        $(document).ready(function (){
+            if (localStorage.getItem('role') == 'resepsionis'){
+                location.replace('resepsionis.html');
+            } else if (localStorage.getItem('role') == 'administrator') {
+                location.replace('administrator.html');
+            }
+            function next_input(element){
+                element.next().focus();
+            }
+            $('#username').keyup(function(e){
+                if (e.which == 13) {
+                    next_input($(this));
+                }
+            });
+
+            $('#password').keyup(function(e){
+                if (e.which == 13) {
+                    $('.login').click();
+                }
+            });
+
+            $('.login').click(function (){
+                $.ajax({'url': 'http://localhost:8000/login', 'type': 'POST', 'data': $('.card-body > input').serialize()})
+                .then(function (res) {
+                    localStorage.setItem('access_token', res.access_token);
+                    localStorage.setItem('role', res.role);
+                    location.reload();
+                });
+            });
+        });
+    </script>
+   <script src="../bootstrap/js/bootstrap.bundle.min.js"></script> 
+</body>
+</html>

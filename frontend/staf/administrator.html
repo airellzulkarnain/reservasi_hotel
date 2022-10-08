@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrap/css/icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/jquery-3.6.1.min.js"></script>
+</head>
+<body>
+  <div class="modal fade" id="insertKamar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Insert Kamar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body insert-kamar d-flex flex-column">
+          <form enctype="multipart/form-data">
+            <label for="tipe_kamar_1" class="form-label">Tipe Kamar: </label>
+            <input type="text" class="form-control" name="tipe_kamar" id="tipe_kamar_1" required>
+            <label for="jumlah_1" class="form-label">Jumlah Kamar: </label>
+            <input type="number" min="1" class="form-control" name="jumlah" id="jumlah_1" required>
+            <label for="pict_1" class="form-label">Gambar: </label>
+            <input type="file" class="form-control" name="pict" id="pict_1" required>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary insert-submit">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="modal fade" id="updateKamar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Kamar</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body update-kamar d-flex flex-column">
+            <form enctype="multipart/form-data">
+              <label for="tipe_kamar" class="form-label">Tipe Kamar: </label>
+              <input type="text" class="form-control" name="tipe_kamar" id="tipe_kamar" required>
+              <label for="jumlah" class="form-label">Jumlah Kamar: </label>
+              <input type="number" min="1" class="form-control" name="jumlah" id="jumlah" required>
+              <label for="pict" class="form-label">Gambar: </label>
+              <input type="file" class="form-control" name="pict" id="pict" required>
+              <input type="hidden" name="id" id="id">
+            </form>
+            <img class="w-50 m-2 align-self-center" alt="No Pict">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary update-submit">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">HOTEL HEBAT</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button> 
+          <div class="collapse navbar-collapse d-flex-lg justify-content-lg-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><h3 class="navbar-text me-2 mb-0 p-0">Administrator</h3></li>
+                <li class="nav-item"><a class="nav-link active" href="#">Kamar</a></li>
+                <li class="nav-item"><a class="nav-link" href="administrator-fasilitas-kamar.html">Fasilitas Kamar</a></li>
+                <li class="nav-item"><a class="nav-link" href="administrator-fasilitas-hotel.html">Fasilitas Hotel</a></li>
+                <li class="nav-item"><p class="nav-link mb-0 user-select-none logout cursor-pointer">Logout <i class="bi bi-box-arrow-in-left"></i></p></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="container min-vh-100 mt-3">
+        <div class="row">
+          <div class="col-12">
+            <div class="table-container tabel-kamar w-100 overflow-auto rounded-3 mx-auto p-0 mt-4 border shadow">
+              <table class="w-100">
+                <tr class="border-bottom bg-dark text-center text-light">
+                  <th>Tipe Kamar</th>
+                  <th>Jumlah Kamar</th>
+                  <th>Aksi</th>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 d-flex flex-row-reverse">
+            <button class="btn add-btn shadow p-0 rounded-circle mt-2" data-bs-toggle="modal" data-bs-target="#insertKamar"><i class="bi bi-plus-circle display-4 lh-1"></i></button>
+          </div>
+        </div>
+      </div>
+      <footer>
+        <div class="container-fluid">
+            <div class="row">
+                <p class="p-5 mt-5 mb-0 text-center bg-dark text-white">Copyright &copy; 2022 Airell Zulkarnain. All Right Reservered</p>
+            </div>
+        </div>
+      </footer>
+    <script>
+        $(document).ready(function () {
+            if (!(localStorage.getItem('role') === 'administrator')) {
+                $('body').remove();
+                location.replace('index.html');
+            }
+            setInterval(function(){$.ajax({'url': 'http://localhost:8000/check_expired', 'type': 'GET', headers: {'Authorization': 'Bearer '+localStorage.getItem('access_token')}})
+            .then(function (res) {}).catch(function(err){if (err.status == 401){$('.logout').click();}})}, 1000);
+            $('.logout').click(function () {
+                localStorage.clear();
+                location.replace('index.html');
+            });
+
+            let data_kamar = [];
+            function load_kamar(){
+              return $.ajax({'url': 'http://localhost:8000/get_kamar', 'type': 'GET'})
+              .then(function (res) {
+                let table = $('.tabel-kamar > table');
+                table.empty();
+                $(`
+                <tr class="border-bottom bg-dark text-center text-light">
+                  <th>Tipe Kamar</th>
+                  <th>Jumlah Kamar</th>
+                  <th>Aksi</th>
+                </tr>
+                `).appendTo(table);
+                for (const r of res) {
+                  $(`
+                  <tr class="text-center border-bottom">
+                    <td>${r.Kamar.tipe_kamar}</td>
+                    <td>${r.Kamar.jumlah}</td>
+                    <td><button class="btn btn-ubah" id="${r.Kamar.id}" data-bs-toggle="modal" data-bs-target="#updateKamar">ubah</button> | <a href="../kamar.html#${r.Kamar.id}" target="_blank" class="text-primary">lihat</a></td>
+                  </tr>
+                  `).appendTo(table);
+                  data_kamar[r.Kamar.id] = r.Kamar;
+                }
+              });
+            }
+            $.when(load_kamar()).done(function(){
+              $('.btn-ubah').click(function(){
+                $('#tipe_kamar').val(data_kamar[$(this).attr('id')].tipe_kamar);
+                $('#jumlah').val(data_kamar[$(this).attr('id')].jumlah);
+                $('#id').val($(this).attr('id'));
+                $('.update-kamar img').attr({'src': `http://localhost:8000/${data_kamar[$(this).attr('id')].gambar}`});
+              });
+
+              $('.update-submit').click(function(){
+                  $.ajax({
+                    'url':'http://localhost:8000/update_kamar', 
+                    'type': 'PUT', 
+                    'contentType': false, 
+                    'processData': false, 
+                    'data': new FormData(document.querySelector('.update-kamar > form')), 
+                    'headers':{'Authorization': 'Bearer '+localStorage.getItem('access_token')}})
+                  .then(function(){
+                    alert('Kamar updated !');
+                    $('#updateKamar [data-bs-dismiss="modal"]').click();
+                    load_kamar();
+                  });
+              });
+            });
+            $('.insert-submit').click(function () {
+              $.ajax({
+                    'url':'http://localhost:8000/insert_kamar', 
+                    'type': 'POST', 
+                    'contentType': false, 
+                    'processData': false, 
+                    'data': new FormData(document.querySelector('.insert-kamar > form')), 
+                    'headers':{'Authorization': 'Bearer '+localStorage.getItem('access_token')}})
+                  .then(function(){
+                    alert('Kamar Inserted !');
+                    $('#insertKamar [data-bs-dismiss="modal"]').click();
+                    load_kamar();
+                  });
+            });
+        });
+    </script>
+    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
