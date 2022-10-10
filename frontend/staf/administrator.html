@@ -120,7 +120,7 @@
 
             let data_kamar = [];
             function load_kamar(){
-              return $.ajax({'url': 'http://localhost:8000/get_kamar', 'type': 'GET'})
+              $.when($.ajax({'url': 'http://localhost:8000/get_kamar', 'type': 'GET'})
               .then(function (res) {
                 let table = $('.tabel-kamar > table');
                 table.empty();
@@ -141,9 +141,7 @@
                   `).appendTo(table);
                   data_kamar[r.Kamar.id] = r.Kamar;
                 }
-              });
-            }
-            $.when(load_kamar()).done(function(){
+              })).done(function(){
               $('.btn-ubah').click(function(){
                 $('#tipe_kamar').val(data_kamar[$(this).attr('id')].tipe_kamar);
                 $('#jumlah').val(data_kamar[$(this).attr('id')].jumlah);
@@ -166,6 +164,11 @@
                   });
               });
             });
+
+            $('#updateKamar form').submit(function (e) {
+                e.preventDefault();
+            });
+            }
             $('.insert-submit').click(function () {
               $.ajax({
                     'url':'http://localhost:8000/insert_kamar', 
@@ -180,6 +183,10 @@
                     load_kamar();
                   });
             });
+            $('#insertKamar form').submit(function (e) {
+                e.preventDefault();
+            });
+            load_kamar();
         });
     </script>
     <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>

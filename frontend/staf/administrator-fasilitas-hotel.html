@@ -119,12 +119,10 @@
                 localStorage.clear();
                 location.replace('index.html');
             });
-        });
-
-        let fasilitas_hotel = [];
+            let fasilitas_hotel = [];
 
         function load_fasilitas_hotel(){
-          return $.ajax({
+          $.when( $.ajax({
             'url': 'http://localhost:8000/get_fasilitas_hotel', 
             'type': 'GET', 
           })
@@ -150,30 +148,12 @@
               `).appendTo(table);
               fasilitas_hotel[r.FasilitasHotel.id] = r.FasilitasHotel;
             }
-          });
-        }
-
-        $.when(load_fasilitas_hotel()).done(function () {
+          })).done(function () {
           $('.btn-ubah').click(function () {
             $('#nama').val(fasilitas_hotel[$(this).attr('id')].nama);
             $('#keterangan').val(fasilitas_hotel[$(this).attr('id')].keterangan);
             $('#id').val($(this).attr('id'));
             $('#updateFasilitasHotel img').attr({'src': 'http://localhost:8000/'+fasilitas_hotel[$(this).attr('id')].gambar});
-          });
-          $('.insert-submit').click(function () {
-            $.ajax({
-              'url': 'http://localhost:8000/insert_fasilitas_hotel', 
-              'type': 'POST', 
-              'contentType': false, 
-              'processData': false, 
-              'data': new FormData(document.querySelector('#insertFasilitasHotel form')),
-              'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}
-            })
-            .then(function (){
-              alert('Fasilitas hotel insert !');
-              $('#insertFasilitasHotel [data-bs-dismiss="modal"]').click();
-              load_fasilitas_hotel();
-            });
           });
 
           $('.update-submit').click(function () {
@@ -192,6 +172,33 @@
             });
           });
         });
+        $('#updateFasilitasHotel form').submit(function (e) {
+                e.preventDefault();
+            });
+        }
+        $('.insert-submit').click(function () {
+            $.ajax({
+              'url': 'http://localhost:8000/insert_fasilitas_hotel', 
+              'type': 'POST', 
+              'contentType': false, 
+              'processData': false, 
+              'data': new FormData(document.querySelector('#insertFasilitasHotel form')),
+              'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}
+            })
+            .then(function (){
+              alert('Fasilitas hotel insert !');
+              $('#insertFasilitasHotel [data-bs-dismiss="modal"]').click();
+              load_fasilitas_hotel();
+            });
+          });
+
+            $('#insertFasilitasHotel form').submit(function (e) {
+                e.preventDefault();
+            });
+            load_fasilitas_hotel();
+        });
+
+        
     </script>
     <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>

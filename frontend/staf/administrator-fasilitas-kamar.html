@@ -125,7 +125,7 @@
             });
 
             function load_fasilitas_kamar(){
-                return $.ajax({
+                $.when($.ajax({
                     'url': 'http://localhost:8000/get_fasilitas_kamar/-1', 
                     'type': 'GET'
                 }).then(function (res) {
@@ -148,24 +148,7 @@
                         `).appendTo(table);
                         fasilitas_kamar[r.FasilitasKamar.id] = r.FasilitasKamar;
                     }
-                });
-            }
-
-            $('.insert-submit').click(function () {
-                let data = {"nama": $('#nama').val(), "id_kamar": parseInt($('#id_kamar').val())};
-                $.ajax({
-                    'url': 'http://localhost:8000/insert_fasilitas_kamar', 
-                    'type': 'POST', 
-                    'contentType': 'application/json', 
-                    'data': JSON.stringify(data), 
-                    'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}
-                }).then(function () {
-                    alert('Inserted Fasilitas Kamar');
-                    $('#insertFasilitasKamar [data-bs-dismiss="modal"]').click();
-                    load_fasilitas_kamar();
-                });
-            });
-            $.when(load_fasilitas_kamar()).done(function () {
+                })).done(function () {
                 $('.btn-ubah').click(function () {
                     $('#id_kamar_1').val(fasilitas_kamar[$(this).attr('id')].id_kamar);
                     $('#nama_1').val(fasilitas_kamar[$(this).attr('id')].nama);
@@ -187,6 +170,30 @@
                     });
                 });
             });
+            $('#updateFasilitasKamar form').submit(function (e) {
+                e.preventDefault();
+            });
+            }
+
+            $('.insert-submit').click(function () {
+                let data = {"nama": $('#nama').val(), "id_kamar": parseInt($('#id_kamar').val())};
+                $.ajax({
+                    'url': 'http://localhost:8000/insert_fasilitas_kamar', 
+                    'type': 'POST', 
+                    'contentType': 'application/json', 
+                    'data': JSON.stringify(data), 
+                    'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}
+                }).then(function () {
+                    alert('Inserted Fasilitas Kamar');
+                    $('#insertFasilitasKamar [data-bs-dismiss="modal"]').click();
+                    load_fasilitas_kamar();
+                });
+            });
+            $('#insertFasilitasKamar form').submit(function (e) {
+                e.preventDefault();
+            });
+            load_fasilitas_kamar();
+
         });
     </script>
     <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
