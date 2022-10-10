@@ -33,20 +33,20 @@
         </div>
     </div>
     </div>
-    <div class="modal fade" id="updateKamar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateFasilitasKamar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Update Kamar</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body update-kamar d-flex flex-column">
+        <div class="modal-body update-fasilitas-kamar d-flex flex-column">
             <form>
-            <label for="id_kamar" class="form-label">Tipe Kamar: </label>
-            <select class="form-control" name="id_kamar" id="id_kamar" required></select>
-            <label for="nama" class="form-label">Nama Fasilitas: </label>
-            <input type="text" class="form-control" name="nama" id="nama" required>
-            <input type="hidden" name="id" id="id">
+            <label for="id_kamar_1" class="form-label">Tipe Kamar: </label>
+            <select class="form-control" name="id_kamar" id="id_kamar_1" required></select>
+            <label for="nama_1" class="form-label">Nama Fasilitas: </label>
+            <input type="text" class="form-control" name="nama" id="nama_1" required>
+            <input type="hidden" name="id" id="id_1">
             </form>
         </div>
         <div class="modal-footer">
@@ -114,11 +114,12 @@
             });
 
             let tipe_kamar = [];
+            let fasilitas_kamar = [];
 
             $.ajax({'url': 'http://localhost:8000/get_kamar', 'type': 'GET'})
             .then(function (res) {
                 for (const r of res) {
-                    $(document.createElement('option')).attr({'value': r.Kamar.id}).text(r.Kamar.tipe_kamar).appendTo($('#id_kamar'));
+                    $(document.createElement('option')).attr({'value': r.Kamar.id}).text(r.Kamar.tipe_kamar).appendTo($('select'));
                     tipe_kamar[r.Kamar.id] = r.Kamar.tipe_kamar;
                 }
             });
@@ -145,6 +146,7 @@
                             <td class="border-bottom text-center"><button class="btn btn-ubah" data-bs-toggle="modal" data-bs-target="#updateFasilitasKamar" id="${r.FasilitasKamar.id}">ubah</button> | <a href="../kamar.html" class="text-primary" target="_blank">lihat</a></td>
                         </tr>
                         `).appendTo(table);
+                        fasilitas_kamar[r.FasilitasKamar.id] = r.FasilitasKamar;
                     }
                 });
             }
@@ -164,7 +166,26 @@
                 });
             });
             $.when(load_fasilitas_kamar()).done(function () {
-                
+                $('.btn-ubah').click(function () {
+                    $('#id_kamar_1').val(fasilitas_kamar[$(this).attr('id')].id_kamar);
+                    $('#nama_1').val(fasilitas_kamar[$(this).attr('id')].nama);
+                    $('#id_1').val($(this).attr('id'));
+                });
+
+                $('.update-submit').click(function () {
+                    $.ajax({
+                        'url': 'http://localhost:8000/update_fasilitas_kamar', 
+                        'type': 'PUT', 
+                        'contentType': 'application/json', 
+                        'data': JSON.stringify({"id_kamar": $('#id_kamar_1').val(), "id":  $('#id_1').val(),"nama": $('#nama_1').val()}), 
+                        'headers': {'Authorization': 'Bearer ' + localStorage.getItem('access_token')}
+                    })
+                    .then(function () {
+                        alert('Fasilitas Kamar Updated!');
+                        $('#updateFasilitasKamar [data-bs-dismiss="modal"]').click();
+                        load_fasilitas_kamar();
+                    });
+                });
             });
         });
     </script>

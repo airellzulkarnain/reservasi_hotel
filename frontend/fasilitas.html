@@ -31,9 +31,11 @@
           </div>
         </div>
       </nav>
-      <div class="container-fluid min-vh-100 pt-5">
-        <div class="row g-3 mt-2 container-fasilitas-hotel">
-          
+      <div class="container-fluid min-vh-100 pt-5 container-fasilitas-hotel">
+        <div class="row">
+          <div class="col-12 text-center mt-4">
+            <h1>Fasilitas Hotel</h1>
+          </div>
         </div>
       </div>
       <footer>
@@ -49,6 +51,7 @@
           const container_fasilitas_hotel = $('.container-fasilitas-hotel');
           for (let r of res) {
             $(`
+            <div class="row g-3 mt-2">
               <div class="col-10 col-lg-6 mx-auto" id="${r.FasilitasHotel.nama}">
                 <div class="card">
                   <img src="http://localhost:8000/${r.FasilitasHotel.gambar}" alt="${r.FasilitasHotel.nama}" class="card-img-top">
@@ -58,6 +61,7 @@
                 </div>
                 </div>
               </div>
+            </div>
           `).appendTo(container_fasilitas_hotel);
           }
         });

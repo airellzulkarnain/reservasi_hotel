@@ -12,6 +12,7 @@
 
 .img-container {
     position: relative;
+    height: 230px;
     overflow: hidden;
 }
 

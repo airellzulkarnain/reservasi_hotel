@@ -11,7 +11,7 @@
     <script src="../assets/js/jquery-3.6.1.min.js"></script>
 </head>
 <body>
-    <div class="modal fade" id="insertKamar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="insertFasilitasHotel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
         <div class="modal-content">
         <div class="modal-header">
@@ -20,10 +20,10 @@
         </div>
         <div class="modal-body insert-kamar d-flex flex-column">
             <form enctype="multipart/form-data">
-            <label for="tipe_kamar_1" class="form-label">Tipe Kamar: </label>
-            <input type="text" class="form-control" name="tipe_kamar" id="tipe_kamar_1" required>
-            <label for="jumlah_1" class="form-label">Jumlah Kamar: </label>
-            <input type="number" min="1" class="form-control" name="jumlah" id="jumlah_1" required>
+            <label for="nama_1" class="form-label">Nama Fasilitas Hotel: </label>
+            <input type="text" class="form-control" name="nama" id="nama_1" required>
+            <label for="keterangan_1" class="form-label">Keterangan: </label>
+            <input type="text" class="form-control" name="keterangan" id="keterangan_1" required>
             <label for="pict_1" class="form-label">Gambar: </label>
             <input type="file" class="form-control" name="pict" id="pict_1" required>
             </form>
@@ -35,31 +35,32 @@
         </div>
     </div>
     </div>
-    <div class="modal fade" id="updateKamar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Update Kamar</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body update-kamar d-flex flex-column">
-            <form enctype="multipart/form-data">
-            <label for="tipe_kamar" class="form-label">Tipe Kamar: </label>
-            <input type="text" class="form-control" name="tipe_kamar" id="tipe_kamar" required>
-            <label for="jumlah" class="form-label">Jumlah Kamar: </label>
-            <input type="number" min="1" class="form-control" name="jumlah" id="jumlah" required>
-            <label for="pict" class="form-label">Gambar: </label>
-            <input type="file" class="form-control" name="pict" id="pict" required>
-            <input type="hidden" name="id" id="id">
-            </form>
-            <img class="w-50 m-2 align-self-center" alt="No Pict">
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary update-submit">Update</button>
-        </div>
-        </div>
-    </div>
+
+    <div class="modal fade" id="updateFasilitasHotel" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-sm-down">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Update Kamar</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body update-kamar d-flex flex-column">
+              <form enctype="multipart/form-data">
+                <label for="nama" class="form-label">Nama Fasilitas Hotel: </label>
+                <input type="text" class="form-control" name="nama" id="nama" required>
+                <label for="keterangan" class="form-label">Keterangan: </label>
+                <input type="text" class="form-control" name="keterangan" id="keterangan" required>
+                <label for="pict" class="form-label">Gambar: </label>
+                <input type="file" class="form-control" name="pict" id="pict" required>
+              <input type="hidden" name="id" id="id">
+              </form>
+              <img class="w-50 m-2 align-self-center" alt="No Pict">
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary update-submit">Update</button>
+          </div>
+          </div>
+      </div>
     </div>
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
     <div class="container-fluid">
@@ -81,11 +82,12 @@
       <div class="container min-vh-100 mt-3">
         <div class="row">
           <div class="col-12">
-            <div class="table-container tabel-kamar w-100 overflow-auto rounded-3 mx-auto p-0 mt-4 border shadow">
+            <div class="table-container tabel-fasilitas-hotel w-100 overflow-auto rounded-3 mx-auto p-0 mt-4 border shadow">
               <table class="w-100">
                 <tr class="border-bottom bg-dark text-center text-light">
-                  <th>Tipe Kamar</th>
-                  <th>Nama</th>
+                  <th>Nama Fasilitas</th>
+                  <th>Keterangan</th>
+                  <th>Gambar</th>
                   <th>Aksi</th>
                 </tr>
               </table>
@@ -94,7 +96,7 @@
         </div>
         <div class="row">
           <div class="col-12 d-flex flex-row-reverse">
-            <button class="btn add-btn shadow p-0 rounded-circle mt-2" data-bs-toggle="modal" data-bs-target="#insertKamar"><i class="bi bi-plus-circle display-4 lh-1"></i></button>
+            <button class="btn add-btn shadow p-0 rounded-circle mt-2" data-bs-toggle="modal" data-bs-target="#insertFasilitasHotel"><i class="bi bi-plus-circle display-4 lh-1"></i></button>
           </div>
         </div>
       </div>
@@ -117,6 +119,78 @@
                 localStorage.clear();
                 location.replace('index.html');
             });
+        });
+
+        let fasilitas_hotel = [];
+
+        function load_fasilitas_hotel(){
+          return $.ajax({
+            'url': 'http://localhost:8000/get_fasilitas_hotel', 
+            'type': 'GET', 
+          })
+          .then(function (res) {
+            let table = $('.tabel-fasilitas-hotel > table');
+            table.empty();
+            $(`
+              <tr class="border-bottom bg-dark text-center text-light">
+                <th>Nama Fasilitas</th>
+                <th>Keterangan</th>
+                <th>Gambar</th>
+                <th>Aksi</th>
+              </tr>
+            `).appendTo(table);
+            for (const r of res) {
+              $(`
+              <tr class="border-bottom text-center">
+                <td>${r.FasilitasHotel.nama}</td>
+                <td>${r.FasilitasHotel.keterangan}</td>
+                <td><img src="http://localhost:8000/${r.FasilitasHotel.gambar}" width="50px"></td>
+                <td><button class="btn btn-ubah" id="${r.FasilitasHotel.id}" data-bs-toggle="modal" data-bs-target="#updateFasilitasHotel">ubah</button> | <a href="../fasilitas.html" target="_blank" class="text-primary">lihat</a></td>
+              </tr>
+              `).appendTo(table);
+              fasilitas_hotel[r.FasilitasHotel.id] = r.FasilitasHotel;
+            }
+          });
+        }
+
+        $.when(load_fasilitas_hotel()).done(function () {
+          $('.btn-ubah').click(function () {
+            $('#nama').val(fasilitas_hotel[$(this).attr('id')].nama);
+            $('#keterangan').val(fasilitas_hotel[$(this).attr('id')].keterangan);
+            $('#id').val($(this).attr('id'));
+            $('#updateFasilitasHotel img').attr({'src': 'http://localhost:8000/'+fasilitas_hotel[$(this).attr('id')].gambar});
+          });
+          $('.insert-submit').click(function () {
+            $.ajax({
+              'url': 'http://localhost:8000/insert_fasilitas_hotel', 
+              'type': 'POST', 
+              'contentType': false, 
+              'processData': false, 
+              'data': new FormData(document.querySelector('#insertFasilitasHotel form')),
+              'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}
+            })
+            .then(function (){
+              alert('Fasilitas hotel insert !');
+              $('#insertFasilitasHotel [data-bs-dismiss="modal"]').click();
+              load_fasilitas_hotel();
+            });
+          });
+
+          $('.update-submit').click(function () {
+            $.ajax({
+              'url': 'http://localhost:8000/update_fasilitas_hotel', 
+              'type': 'PUT', 
+              'contentType': false, 
+              'processData': false, 
+              'data': new FormData(document.querySelector('#updateFasilitasHotel form')),
+              'headers': {'Authorization': 'Bearer '+localStorage.getItem('access_token')}
+            })
+            .then(function (){
+              alert('Fasilitas hotel updated');
+              $('#updateFasilitasHotel [data-bs-dismiss="modal"]').click();
+              load_fasilitas_hotel();
+            });
+          });
         });
     </script>
     <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
